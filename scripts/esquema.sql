@@ -79,7 +79,7 @@ CREATE TABLE Fotografo (
 	telefone VARCHAR(25) NOT NULL,
 	rating SMALLINT,
 	qtd_aval INT DEFAULT 0,
-	nacionalidade CHAR(3) NOT NULL, -- Todos os países podem ser representados por um código de tres caracteres (ISO 3166-1 alfa-3)
+	nacionalidade VARCHAR(30) NOT NULL, -- Para depois: todos os países podem ser representados por um código de tres caracteres (ISO 3166-1 alfa-3)
 	data_nasc DATE NOT NULL, -- Somente a data (sem horário)
 	visualizacoes INT DEFAULT 0,
 	nb_servicos INT DEFAULT 0,

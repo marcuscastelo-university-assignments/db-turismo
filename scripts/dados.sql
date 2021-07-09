@@ -5,45 +5,46 @@
 
 -- Tipo de serviço: evento cultural, registro histórico, natureza, registro esportivo, divulgação
 -- Tipo de hospedagem: hotel, motel, sítio, casa, apartamento, hostel, camping
+-- Formas de pagamento: Moradia, Desconto em passagem, Dinheiro, Outros
 
 -- ---------------- INSERINDO EM CONTRATANTE ---------------- --
 INSERT INTO Contratante VALUES (
-	'111.111.111-11', -- documento do contratante
+	'11111111111', -- documento do contratante
 	'Contratante 1', -- nome
 	'cont1@gmail.com', -- email
-	'(11)1111-1111', -- telefone
+	'+55 1197890623', -- telefone
 	NULL,-- rating
 	DEFAULT, -- qtd. de avaliacoes
 	'Rua XYZ', -- logradouro
 	11, -- numero
 	'apto 3', -- complemento
-	'12345-000', -- cep
+	'12345000', -- cep
 	'Santos', -- cidade
-	'Saõ Paulo', -- estado
+	'São Paulo', -- estado
 	'Brasil', -- pais
 	DEFAULT -- numero de servicos
 );
 
 INSERT INTO Contratante VALUES (
-	'222.222.222-22', -- documento do contratante
+	'22222222222', -- documento do contratante
 	'Contratante 2', -- nome
 	'cont2@uol.com', -- email
-	'(22)2222-2222', -- telefone
+	'+55 2733096754', -- telefone
 	NULL,-- rating
 	DEFAULT, -- qtd. de avaliacoes
 	'Rua ABCD', -- logradouro
 	22, -- numero
 	'casa 1', -- complemento
-	'11223-123', -- cep
+	'11223123', -- cep
 	'São Carlos', -- cidade
-	'Saõ Paulo', -- estado
+	'São Paulo', -- estado
 	'Brasil', -- pais
 	DEFAULT -- numero de servicos
 );
 
 -- ---------------- INSERINDO EM OFERTA ---------------- --
 INSERT INTO Oferta VALUES (
-	'111.111.111-11', -- documento do contratante (chave estrangeira)
+	'11111111111', -- documento do contratante (chave estrangeira)
 	'Fotógrafo para divulgação de hotel fazenda', -- titulo
 	'Desconto em passagem, Moradia', -- formas de pagamento
 	'Hotel-fazenda Bela Vista', -- local
@@ -52,7 +53,7 @@ INSERT INTO Oferta VALUES (
 );
 
 INSERT INTO Oferta VALUES (
-	'222.222.222-22', -- documento do contratante
+	'22222222222', -- documento do contratante
 	'Fotógrafo de evento zen', -- titulo
 	'Moradia, Outros', -- formas de pagamento
 	'Mosteiro Sakya Tsarpa', -- local
@@ -62,14 +63,14 @@ INSERT INTO Oferta VALUES (
 
 -- ---------------- INSERINDO EM BENEFICIO ---------------- --
 INSERT INTO Beneficio VALUES (
-	'111.111.111-11', -- documento do contratante
+	'11111111111', -- documento do contratante
 	'Fotógrafo para divulgação de hotel fazenda', -- titulo
 	'Desconto em passagem, Moradia', -- formas de pagamento
 	'Desconto na passagem, estadia no hotel-fazenda, café da manhã e almoço no hotel, passeio de cavalo' -- descricao
 );
 
 INSERT INTO Beneficio VALUES (
-	'222.222.222-22', -- documento do contratante
+	'22222222222', -- documento do contratante
 	'Fotógrafo de evento zen', -- titulo
 	'Moradia, Outros', -- formas de pagamento
 	'Estadia no mosteiro durante uma semana, cursos de yoga e budismo com os monges do mosteiro, café da manhã, almoço e janta, sessões de meditação' -- descricao
@@ -77,7 +78,7 @@ INSERT INTO Beneficio VALUES (
 
 -- ---------------- INSERINDO EM HOSPEDAGEM ---------------- --
 INSERT INTO Hospedagem VALUES (
-	'94735-293', -- cep
+	'94735293', -- cep
 	'Mosteiro Sakya Tsarpa', -- nome
 	'Rodovia Ver. José de Moraes', -- logradouro
 	30, -- numero
@@ -89,7 +90,7 @@ INSERT INTO Hospedagem VALUES (
 );
 
 INSERT INTO Hospedagem VALUES (
-	'12345-000', -- cep
+	'12345000', -- cep
 	'Hotel-fazenda Bela Vista', -- nome
 	'Rua ABC', -- logradouro
 	100, -- numero
