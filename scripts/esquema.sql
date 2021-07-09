@@ -1,9 +1,23 @@
 -- Arquivo com informações de criação das tabelas no banco de dados
 
-DROP DATABASE IF EXISTS dbturismo;
-CREATE DATABASE dbturismo
+DROP DATABASE IF EXISTS db-turismo;
+CREATE DATABASE db-turismo;
 
 CREATE TABLE Contratante (
+	doc_cont VARCHAR(20) NOT NULL,
+	nome VARCHAR(80) NOT NULL, 
+	email VARCHAR(50) NOT NULL, 
+	telefone VARCHAR(25) NOT NULL, 
+	rating SMALLINT,
+	qtd_aval INT DEFAULT 0 CHECK (qtd_aval >= 0),
+	logradouro VARCHAR(50), 
+	numero SMALLINT NOT NULL, 
+	complemento VARCHAR(15), 
+	cep VARCHAR(12) NOT NULL, 
+	cidade VARCHAR(30), 
+	estado VARCHAR(30), 
+	pais VARCHAR(30), 
+	nb_servicos INT DEFAULT 0,
 	CONSTRAINT pk_contratante PRIMARY KEY (doc_cont),
 	CONSTRAINT unique_telefone_cont UNIQUE (telefone),
 	CONSTRAINT unique_email_cont UNIQUE (email),
@@ -170,12 +184,12 @@ CREATE TABLE Servico (
 	aval_cont SMALLINT,
 	id_plano UUID, -- Validação de plano
 
-	CONSTRAINT pk_servico PRIMARY KEY (doc_fot, doc_cont, titulo_oferta, formas_pag, data_inicio, data_fim)
+	CONSTRAINT pk_servico PRIMARY KEY (doc_fot, doc_cont, titulo_oferta, formas_pag, data_inicio, data_fim),
 
-	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot)
-	CONSTRAINT fk_contratante FOREIGN KEY (doc_cont) REFERENCES Contratante(doc_cont)
-	CONSTRAINT fk_oferta FOREIGN KEY (titulo_oferta, formas_pag) REFERENCES Oferta(titulo_oferta, formas_pag)
-CONSTRAINT fk_plano FOREIGN KEY (id_plano) REFERENCES PlanoViagem(id_plano) ON DELETE SET NULL
+	CONSTRAINT fk_serv_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot),
+	CONSTRAINT fk_serv_contratante FOREIGN KEY (doc_cont) REFERENCES Contratante(doc_cont),
+	CONSTRAINT fk_oferta FOREIGN KEY (doc_cont, titulo_oferta, formas_pag) REFERENCES Oferta(doc_cont, titulo, formas_pag),
+    CONSTRAINT fk_plano FOREIGN KEY (id_plano) REFERENCES PlanoViagem(id_plano) ON DELETE SET NULL,
 
-	CHECK data_inicio < data_fim
+	CHECK (data_inicio < data_fim)
 );
