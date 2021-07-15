@@ -30,19 +30,6 @@ def dbConnect():
 		cur = conn.cursor()
 	except:
 		print('[ERRO] Erro ao conectar-se ao banco de dados')
-		
-
-def sanitizePhone(raw_phone):
-	if raw_phone is None or len(raw_phone) == 0:
-		print(1)
-		return False
-
-	phone_parts = raw_phone.split(' ')
-	if not (len(phone_parts) == 2 and len(phone_parts[0]) > 1 and phone_parts[0][0] == '+' and len(phone_parts[1]) >= 1 ):
-		print(2)
-		return False
-
-	return phone_parts[0].replace(r'^[-.*() ]$.', '') + ' ' + phone_parts[1].replace(r'^[-.*()+ ].$', '')
 
 
 def formatDocAs(type, userDoc):
@@ -101,17 +88,29 @@ def login():
 	else:
 		return False
 
+def sanitizePhone(raw_phone):
+	# check param passed to function
+	if raw_phone is None or len(raw_phone) == 0:
+		return False
+
+	phone_parts = raw_phone.split(' ')
+	# phone must follow a pattern: two parts divided by a space (' '), country code must begin with + and the phone must have at least 1 digit
+	if not (len(phone_parts) == 2 and len(phone_parts[0]) > 1 and phone_parts[0][0] == '+' and len(phone_parts[1]) >= 1 ):
+		return False
+	
+	# applying regex to remove speacial chars that are not wanted
+	return phone_parts[0].replace(r'^[-.*() ]$.', '') + ' ' + phone_parts[1].replace(r'^[-.*()+ ].$', '')
+
 def inputWithValidation(regExPattern, promptText, inputTreatment = lambda x: x):
-	ok = False
-	while not ok:
-		resp = inputTreatment(input(promptText))
-		print(resp)
-		if not (re.match(re.compile(regExPattern), resp)):
+	ok = False # variable to validate modifications
+	while not ok: # while the input is not following the pattern wanted, the user must enter another input
+		resp = inputTreatment(input(promptText)) # ask for user's input, showing the message stored at promptText. If needed, a lambda function is executed (inputTreatment) to treat the user's input
+		if not (re.match(re.compile(regExPattern), resp)): # regex matching -> input must match the regex to have a valid input
 			print('Formato inválido. Tente novamente...')
 			ok = False
 		else:
 			ok = True
-	return resp
+	return resp # returning input from user
 
 def register():
 	userType = promptUserType(
@@ -128,7 +127,7 @@ def register():
 
 def registerContractorFields():
 	query_params = dict()
-	while True:
+	while True: # keep accepting input while there's an invalid entry from the user
 		print('\n')
 		query_params['doc_cont'] = inputWithValidation(r'^(\d{11}|\d{14})$', 'Digite o seu documento (CPF ou CNPJ):', lambda x: x.replace('.', ''))
 		
@@ -160,11 +159,12 @@ def registerContractorFields():
 			conn.commit()
 			return True
 		except Exception as e:
-			print("[ERROR] Erro ao cadastrar contratante:")
-			print(e, file=sys.stderr)
+			print("[ERRO] Erro ao cadastrar contratante...")
+			# print(e, file=sys.stderr) -> avoid giving too much info
 
 def registerPhotographerFields():
 	query_params = dict()
+	languages = []
 	while True:
 		
 		query_params['doc_fot'] = inputWithValidation(r'^(\d{11}|\d{14})$', 'Digite o seu documento (CPF ou CNPJ):', lambda x: x.replace('.', ''))
@@ -183,17 +183,29 @@ def registerPhotographerFields():
 		query_params['nacionalidade'] = input('Digite o nacionalidade: ')
 		query_params['data_nasc'] = inputWithValidation(r'^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d$', 'Digite a data de nascimento (dd/mm/aaaa): ')
 		
+		# Uses ISO 639-2 for language codes
+		raw_languages = inputWithValidation(r'^(?:\s*[a-zA-Z]{3}\s*[,]?\s*)*(?:\s*[a-zA-Z]{3}\s*)$', "Digite os idiomas falados (3 digitos por idioma: ISO 639-2), separados por vírgula: ")
+		languages = map(lambda s: s.strip(), raw_languages.split(','))
+
 		try:
 			# Inserting only some fields, other fields have default values.
 			cur.execute('''
 				INSERT INTO Fotografo (doc_fot,nome,email,telefone,nacionalidade,data_nasc) 
 				VALUES (%(doc_fot)s,%(nome)s,%(email)s,%(telefone)s,%(nacionalidade)s,TO_DATE(%(data_nasc)s, 'DD/MM/YYYY'))
 			''', query_params)
+
+			for lang in languages:
+				cur.execute('''
+					INSERT INTO IdiomaFotografo (doc_fot, idioma)
+					VALUES (%(doc_fot)s, %(idioma)s)
+				''', { "doc_fot": query_params["doc_fot"], "idioma": lang })
+
 			conn.commit()
+
 			return True
 		except Exception as e:
-			print("[ERROR] Erro ao cadastrar contratante:")
-			print(e, file=sys.stderr)
+			print("[ERRO] Erro ao cadastrar fotógrafo...")
+			# print(e, file=sys.stderr) # -> avoid giving too much info
 	
 def showOffers():
 	offersList = ''
@@ -201,13 +213,15 @@ def showOffers():
 	# listing all offers from the db
 	cur.execute('SELECT titulo, local, descricao, tipo_servico, formas_pag from Oferta ORDER BY titulo')
 	queryResult = cur.fetchall()
+
+	# creating string with all offers (offers list)
 	for index, row in enumerate(queryResult):
-		offersList += '\n== Oferta ' + str(index+1) + ' ==\n'
-		offersList += 'Título: ' + row[0] + '\n'
-		offersList += 'Local: ' + row[1] + '\n'
-		offersList += 'Descrição: ' + row[2] + '\n'
-		offersList += 'Tipo de serviço: ' + row[3] + '\n'
-		offersList += 'Formas de pagamento: ' + row[4] + '\n'
+		offersList += '\n== Oferta {} ==\n'.fornat(str(index+1))
+		offersList += 'Título: {}\n'.format(row[0])
+		offersList += 'Local: {} \n'.format(row[1])
+		offersList += 'Descrição: {}\n'.format(row[2])
+		offersList += 'Tipo de serviço: {}\n'.format(ow[3])
+		offersList += 'Formas de pagamento: {}\n'.format(row[4])
 
 	print(offersList)
 
@@ -217,15 +231,17 @@ def showPhotographers():
 	# listing all photographers from the db
 	cur.execute('SELECT nome, email, telefone, rating, qtd_aval, nacionalidade, visualizacoes, nb_servicos FROM Fotografo ORDER BY nome')
 	queryResult = cur.fetchall()
+
+	# creating string with relevant data from photographers
 	for index, row in enumerate(queryResult):
-		photList += '\n== Fotógrafo ' + str(index+1) + ' ==\n'
-		photList += 'Nome: ' + row[0] + '\n'
-		photList += 'Email: ' + row[1] + '\n'
-		photList += 'Telefone: ' + row[2] + '\n'
-		photList += 'Rating: ' + (str(row[3]) if row[3] is not None else '-') + ' (' + str(row[4]) + ' avaliações)\n'
-		photList += 'Nacionalidade: ' + row[5] + '\n'
-		photList += 'Qtd. de serviços realizados: ' + str(row[7]) + '\n'
-		photList += 'Visualizações no portifólio: ' + str(row[6]) + '\n'
+		photList += '\n== Fotógrafo {} ==\n'.format(str(index+1))
+		photList += 'Nome: {}\n'.format(row[0])
+		photList += 'Email: {}\n'.format(row[1])
+		photList += 'Telefone: {}\n'.format(row[2])
+		photList += 'Rating: {} ({} avaliações)\n'.format((str(row[3]) if row[3] is not None else '-'), str(row[4]))
+		photList += 'Nacionalidade: {}\n'.format(row[5])
+		photList += 'Qtd. de serviços realizados: {}\n'.format(str(row[7]))
+		photList += 'Visualizações no portifólio: {}\n'.format(str(row[6]))
 
 	print(photList)
 
