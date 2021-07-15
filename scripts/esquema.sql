@@ -3,6 +3,21 @@
 DROP DATABASE IF EXISTS db-turismo;
 CREATE DATABASE db-turismo;
 
+DROP TABLE Contratante CASCADE;
+DROP TABLE Oferta CASCADE;
+DROP TABLE Beneficio CASCADE;
+DROP TABLE Hospedagem CASCADE;
+DROP TABLE OferecimentoHospadagem CASCADE;
+DROP TABLE Fotografo CASCADE;
+DROP TABLE IdiomaFotografo CASCADE;
+DROP TABLE PortfolioFotografo CASCADE;
+DROP TABLE PlanoViagem CASCADE;
+DROP TABLE Parada CASCADE;
+DROP TABLE ReservaHospadagem CASCADE;
+DROP TABLE ReservaTransporte CASCADE;
+DROP TABLE Servico CASCADE;
+
+
 CREATE TABLE Contratante (
 	doc_cont VARCHAR(20) NOT NULL,
 	nome VARCHAR(80) NOT NULL, 
@@ -107,8 +122,8 @@ CREATE TABLE IdiomaFotografo (
 
 CREATE TABLE PortfolioFotografo (
 	doc_fot VARCHAR(20) NOT NULL,
-	checksum INT NOT NULL,
-	imagem_oid OID NOT NULL, -- OID (Object ID) é a referência que o PostgreSQL faz ao arquivo inserido.
+	checksum VARCHAR(60) NOT NULL,
+	imagem_url VARCHAR(80) NOT NULL, -- OID (Object ID) é a referência que o PostgreSQL faz ao arquivo inserido.
 	CONSTRAINT pk_portifolio PRIMARY KEY (doc_fot, checksum),
 	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot) ON DELETE CASCADE
 );
@@ -166,10 +181,12 @@ CREATE TABLE ReservaTransporte (
 	marca VARCHAR(15),
 	modelo VARCHAR(20),
 	tipo VARCHAR(15) NOT NULL,
-	Horario TIMESTAMP NOT NULL,
+	horario TIMESTAMP NOT NULL,
 	doc_fot VARCHAR(20) NOT NULL,
 	CONSTRAINT pk_reserva_transporte PRIMARY KEY (nb_reserva),
-	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot)
+	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot),
+
+	CHECK (tipo IN ('carro', 'avião', 'trem', 'navio', 'barco', 'moto', 'cavalo', 'metrô') )
 );
 
 CREATE TABLE Servico (
