@@ -2,7 +2,7 @@
 
 -- Tipo de serviço: evento cultural, registro histórico, natureza, registro esportivo, divulgação
 -- Tipo de hospedagem: hotel, motel, sítio, casa, apartamento, hostel, camping
--- Formas de pagamento: Moradia, Desconto em passagem, Dinheiro, Outros
+-- Formas de pagamento: moradia, desconto em passagem, dinheiro, outros
 
 SET timezone = 'America/Sao_Paulo';
 SHOW timezone;
@@ -51,18 +51,58 @@ VALUES
 (
 	'11111111111', -- documento do contratante (chave estrangeira)
 	'Fotógrafo para divulgação de hotel fazenda', -- titulo
-	'Desconto em passagem, Moradia', -- formas de pagamento
+	'desconto em passagem, moradia', -- formas de pagamento
 	'Hotel-fazenda Bela Vista', -- local
 	'Precisa-se de fotógrafo para tirar fotos do hotel-fazenda a fim de inserí-las nas redes sociais e no site do hotel. O prósito do trabalho é atualizar fotos de divulgação pós reforma do hotel.', -- descricao
-	'Divulgação' -- tipo de servico
+	'divulgação' -- tipo de servico
+),
+(
+	'11111111111', -- documento do contratante (chave estrangeira)
+	'Fotógrafo para divulgação de hotel fazenda 2', -- titulo
+	'desconto em passagem, moradia', -- formas de pagamento
+	'Hotel-fazenda Bela Vista', -- local
+	'Precisa-se de fotógrafo para tirar fotos do hotel-fazenda a fim de inserí-las nas redes sociais e no site do hotel. O prósito do trabalho é atualizar fotos de divulgação pós reforma do hotel.', -- descricao
+	'divulgação' -- tipo de servico
 ),
 (
 	'22222222222', -- documento do contratante
 	'Fotógrafo de evento zen', -- titulo
-	'Moradia, Outros', -- formas de pagamento
+	'moradia, outros', -- formas de pagamento
 	'Mosteiro Sakya Tsarpa', -- local
 	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
-	'Evento cultural' -- tipo de servico
+	'evento cultural' -- tipo de servico
+),
+(
+	'22222222222', -- documento do contratante
+	'Fotógrafo de evento zen 2', -- titulo
+	'moradia, outros', -- formas de pagamento
+	'Mosteiro Sakya Tsarpa', -- local
+	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
+	'evento cultural' -- tipo de servico
+),
+(
+	'22222222222', -- documento do contratante
+	'Fotógrafo de evento zen 3', -- titulo
+	'moradia, outros', -- formas de pagamento
+	'Mosteiro Sakya Tsarpa', -- local
+	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
+	'evento cultural' -- tipo de servico
+),
+(
+	'22222222222', -- documento do contratante
+	'Novo 1', -- titulo
+	'moradia, outros', -- formas de pagamento
+	'Novo local', -- local
+	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
+	'evento cultural' -- tipo de servico
+),
+(
+	'22222222222', -- documento do contratante
+	'Novo 2', -- titulo
+	'moradia, outros', -- formas de pagamento
+	'Novo local', -- local
+	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
+	'evento cultural' -- tipo de servico
 );
 
 -- ---------------- INSERINDO EM BENEFICIO ---------------- --
@@ -71,13 +111,13 @@ VALUES
 (
 	'11111111111', -- documento do contratante
 	'Fotógrafo para divulgação de hotel fazenda', -- titulo
-	'Desconto em passagem, Moradia', -- formas de pagamento
+	'desconto em passagem, moradia', -- formas de pagamento
 	'Desconto na passagem, estadia no hotel-fazenda, café da manhã e almoço no hotel, passeio de cavalo' -- descricao
 ),
 (
 	'22222222222', -- documento do contratante
 	'Fotógrafo de evento zen', -- titulo
-	'Moradia, Outros', -- formas de pagamento
+	'moradia, outros', -- formas de pagamento
 	'Estadia no mosteiro durante uma semana, cursos de yoga e budismo com os monges do mosteiro, café da manhã, almoço e janta, sessões de meditação' -- descricao
 );
 
@@ -93,7 +133,7 @@ VALUES
 	'Cabreúva', -- cidade
 	'São Paulo', -- estado
   	'Brasil', -- brasil
-  	'Sítio' -- tipo de hospedagem
+  	'sítio' -- tipo de hospedagem
 ),
 (
 	'12345000', -- cep
@@ -104,23 +144,23 @@ VALUES
 	'Guarujá', -- cidade
 	'São Paulo', -- estado
   	'Brasil', -- brasil
-  	'Hotel' -- tipo de hospedagem
+  	'hotel' -- tipo de hospedagem
 );
 
 -- ---------------- INSERINDO EM OFERECIMENTO HOSPEDAGEM ---------------- --
-INSERT INTO OferecimentoHospadagem (doc_cont,titulo,formas_pag,cep,nome_hosp)
+INSERT INTO OferecimentoHospedagem (doc_cont,titulo,formas_pag,cep,nome_hosp)
 VALUES 
 (
 	'22222222222', -- documento do contratante
 	'Fotógrafo de evento zen', -- titulo
-	'Moradia, Outros', -- formas de pagamento
+	'moradia, outros', -- formas de pagamento
 	'94735293', -- cep
 	'Mosteiro Sakya Tsarpa' -- nome da hospedagem
 ),
 (
 	'11111111111', -- documento do contratante
 	'Fotógrafo para divulgação de hotel fazenda', -- titulo
-	'Desconto em passagem, Moradia', -- formas de pagamento
+	'desconto em passagem, moradia', -- formas de pagamento
 	'12345000', -- cep
 	'Hotel-fazenda Bela Vista' -- nome
 );
@@ -234,13 +274,35 @@ VALUES
 	'12312312300' -- documento do fotógrafo
 );
 
+-- ---------------- INSERINDO EM RESERVA HOSPEDAGEM ---------------- --
+INSERT INTO ReservaHospedagem (nb_reserva,data_inicio,data_fim,cep_hosp,nome_hosp,id_parada,doc_fot)
+VALUES
+(
+	'987987987',
+	'2021-11-01 10:00:00',	
+	'2021-11-01 17:00:00',
+	'94735293', -- cep
+	'Mosteiro Sakya Tsarpa', -- nome
+	'e4bace5c-e58f-11eb-ba80-0242ac130004',
+	'12312312300'
+),
+(
+	'741741741',
+	'2021-11-01 19:00:00',	
+	'2021-11-03 10:00:00',
+	'12345000', -- cep
+	'Hotel-fazenda Bela Vista', -- nome
+	'e4bace5c-e58f-11eb-ba80-0242ac130004',
+	'12312312300'
+);
+
 INSERT INTO Servico (doc_fot,doc_cont,titulo_oferta,formas_pag,data_inicio,data_fim,concluido,aval_fot,aval_cont,id_plano)
 VALUES
 (
 	'12312312300',
 	'11111111111',
 	'Fotógrafo para divulgação de hotel fazenda',
-	'Desconto em passagem, Moradia',
+	'desconto em passagem, moradia',
 	'2021-11-01',
 	'2021-11-30',
 	FALSE,
@@ -253,7 +315,7 @@ VALUES
 	'12312312300',
 	'22222222222',
 	'Fotógrafo de evento zen',
-	'Moradia, Outros',
+	'moradia, outros',
 	'2021-12-10',
 	'2021-12-17',
 	FALSE,
@@ -265,7 +327,7 @@ VALUES
 	'49320549212',
 	'22222222222',
 	'Fotógrafo de evento zen',
-	'Moradia, Outros',
+	'moradia, outros',
 	'2021-07-05',
 	'2021-07-22', 
 	FALSE,

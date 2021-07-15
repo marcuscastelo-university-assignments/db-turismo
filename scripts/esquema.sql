@@ -1,21 +1,25 @@
 -- Arquivo com informações de criação das tabelas no banco de dados
 
+-- Tipo de serviço: evento cultural, registro histórico, natureza, registro esportivo, divulgação
+-- Tipo de hospedagem: hotel, motel, sítio, casa, apartamento, hostel, camping, pousada
+-- Formas de pagamento: moradia, desconto em passagem, dinheiro, outros
+
 DROP DATABASE IF EXISTS db-turismo;
 CREATE DATABASE db-turismo;
 
-DROP TABLE Contratante CASCADE;
-DROP TABLE Oferta CASCADE;
-DROP TABLE Beneficio CASCADE;
-DROP TABLE Hospedagem CASCADE;
-DROP TABLE OferecimentoHospadagem CASCADE;
-DROP TABLE Fotografo CASCADE;
-DROP TABLE IdiomaFotografo CASCADE;
-DROP TABLE PortfolioFotografo CASCADE;
-DROP TABLE PlanoViagem CASCADE;
-DROP TABLE Parada CASCADE;
-DROP TABLE ReservaHospadagem CASCADE;
-DROP TABLE ReservaTransporte CASCADE;
-DROP TABLE Servico CASCADE;
+DROP TABLE IF EXISTS ReservaTransporte CASCADE;
+DROP TABLE IF EXISTS ReservaHospedagem CASCADE;
+DROP TABLE IF EXISTS Servico CASCADE;
+DROP TABLE IF EXISTS Parada CASCADE;
+DROP TABLE IF EXISTS PlanoViagem CASCADE;
+DROP TABLE IF EXISTS IdiomaFotografo CASCADE;
+DROP TABLE IF EXISTS PortfolioFotografo CASCADE;
+DROP TABLE IF EXISTS OferecimentoHospedagem CASCADE;
+DROP TABLE IF EXISTS Beneficio CASCADE;
+DROP TABLE IF EXISTS Hospedagem CASCADE;
+DROP TABLE IF EXISTS Oferta CASCADE;
+DROP TABLE IF EXISTS Contratante CASCADE;
+DROP TABLE IF EXISTS Fotografo CASCADE;
 
 
 CREATE TABLE Contratante (
@@ -49,7 +53,9 @@ CREATE TABLE Oferta (
 	descricao TEXT NOT NULL, 
 	tipo_servico  VARCHAR(50) NOT NULL,
 	CONSTRAINT pk_oferta PRIMARY KEY (doc_cont, titulo, formas_pag),
-	CONSTRAINT fk_contratante FOREIGN KEY (doc_cont) REFERENCES Contratante(doc_cont) ON DELETE CASCADE
+	CONSTRAINT fk_contratante FOREIGN KEY (doc_cont) REFERENCES Contratante(doc_cont) ON DELETE CASCADE,
+
+	CHECK (tipo_servico IN ('evento cultural', 'registro histórico', 'natureza', 'registro esportivo', 'divulgação'))
 );
 
 CREATE TABLE Beneficio (
@@ -72,10 +78,12 @@ CREATE TABLE Hospedagem (
   	pais VARCHAR(30),
   	tipo VARCHAR(10),
 
-  	CONSTRAINT pk_hospedagem PRIMARY KEY (cep,nome)
+  	CONSTRAINT pk_hospedagem PRIMARY KEY (cep,nome),
+
+	CHECK (tipo IN ('hotel', 'motel', 'sítio', 'casa', 'apartamento', 'hostel', 'camping', 'pousada'))
 );
 
-CREATE TABLE OferecimentoHospadagem (
+CREATE TABLE OferecimentoHospedagem (
 	doc_cont VARCHAR(20) NOT NULL,
 	titulo VARCHAR(60) NOT NULL,
 	formas_pag VARCHAR(30) NOT NULL,
@@ -123,7 +131,7 @@ CREATE TABLE IdiomaFotografo (
 CREATE TABLE PortfolioFotografo (
 	doc_fot VARCHAR(20) NOT NULL,
 	checksum VARCHAR(60) NOT NULL,
-	imagem_url VARCHAR(80) NOT NULL, -- OID (Object ID) é a referência que o PostgreSQL faz ao arquivo inserido.
+	imagem_url VARCHAR(80) NOT NULL, -- Iriamos usar OID (Object ID), que é a referência que o PostgreSQL faz ao arquivo inserido, mas nessa etapa foi observado que era melhor usar uma URL por simplicidade e economia de espaço (essa é a única diferença que há com relação ao projeto lógico!)
 	CONSTRAINT pk_portifolio PRIMARY KEY (doc_fot, checksum),
 	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot) ON DELETE CASCADE
 );
@@ -160,7 +168,7 @@ CREATE TABLE Parada (
 	CHECK (data_chegada < data_saida)
 );
 
-CREATE TABLE ReservaHospadagem (
+CREATE TABLE ReservaHospedagem (
 	nb_reserva VARCHAR(25) NOT NULL,
 	data_inicio TIMESTAMP NOT NULL,
 	data_fim TIMESTAMP NOT NULL,
