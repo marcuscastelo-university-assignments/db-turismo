@@ -1,9 +1,5 @@
 -- Arquivo com informações de preenchimento das tabelas do aplicação com pelo menos 2 tuplas cada
 
--- Tipo de serviço: evento cultural, registro histórico, natureza, registro esportivo, divulgação
--- Tipo de hospedagem: hotel, motel, sítio, casa, apartamento, hostel, camping
--- Formas de pagamento: moradia, desconto em passagem, dinheiro, outros
-
 SET timezone = 'America/Sao_Paulo';
 SHOW timezone;
 

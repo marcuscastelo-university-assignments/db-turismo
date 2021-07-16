@@ -1,19 +1,27 @@
+# ==================================================================
+# 	Grupo 4:
+# 	- Gabriel Vitor de Jesus Lima
+# 	- Marcus Vinicius Castelo Branco Martins
+# 	- Pedro Guerra Lourenço
+# ==================================================================
+#	Funções criadas para teste do banco de dados em aplicação:
+#	- 	Criar conta na aplicação (como contratante ou fotógrafo) usando CPF/CNPJ
+#	- 	Logar em conta criada apenas com o ( CPF e tipo [contratante ou fotógrafo])
+#	- 	Listar ofertas para Fotógrafo
+#	- 	Listas fotógrafos para Contratante
+# ==================================================================
+
+
 import psycopg2
 from dotenv import load_dotenv
 import os
 import sys
 import re
 
-# Funções criadas para teste do banco de dados em aplicação:
-	# Criar conta na aplicação (como contratante ou fotógrafo) usando CPF/CNPJ
-	# Logar em conta criada apenas com o ( CPF e tipo [contratante ou fotógrafo])
-	# Listar ofertas para Fotógrafo
-	# Listas fotógrafos para Contratante
-	# Criar nova oferta
-
 cur = None  # cursor from db connection
-conn = None
+conn = None	# db connection
 
+# Function to connect to database
 def dbConnect():
 	global cur
 	global conn
@@ -32,6 +40,7 @@ def dbConnect():
 		print('[ERRO] Erro ao conectar-se ao banco de dados')
 
 
+# Function that formats documents according to the correct format (for now we have CPF and CNPJ formats)
 def formatDocAs(type, userDoc):
 	result = ''
 
@@ -45,7 +54,7 @@ def formatDocAs(type, userDoc):
 			userDoc[5:8] + '/' + userDoc[8:12] + '-' + userDoc[12:14]
 	return result
 
-
+# Function used to login user as photographer or contractor
 def authAs(type):
 	if type == 'c':
 		userTable = 'Contratante'
@@ -59,7 +68,7 @@ def authAs(type):
 
 	# Query to check if user doc is in database. If it is, user can log in
 	checkLoginQuery = 'SELECT * FROM {} WHERE {} = %(userDoc)s'.format(userTable, userDocField)
-	# print(checkLoginQuery)
+	
 	cur.execute(checkLoginQuery, {'userTable': userTable, 'userDoc': userDocInput})
 	result = cur.fetchall()
 	
@@ -69,15 +78,16 @@ def authAs(type):
 	else:
 		return True
 
-
+# Function used to request user input
+# They must choose if they're "fotografo" or "contratante"
 def promptUserType(promptMessage):
-	'''returns c for contractor and f for photographer'''
+	# returns c for contractor and f for photographer
 	userType = '-'
 	while userType.lower()[0] not in ['c', 'f']:
 		userType = input(promptMessage)
 	return userType.lower()[0]
 
-
+# Function used for login in the system
 def login():
 	userType = promptUserType(
 		'Deseja logar como fotógrafo ou como contratante?\n>> ')
@@ -87,7 +97,7 @@ def login():
 		return userType
 	else:
 		return False
-
+# Function used to check user input for phone number and sanitize it
 def sanitizePhone(raw_phone):
 	# check param passed to function
 	if raw_phone is None or len(raw_phone) == 0:
@@ -101,6 +111,8 @@ def sanitizePhone(raw_phone):
 	# applying regex to remove speacial chars that are not wanted
 	return phone_parts[0].replace(r'^[-.*() ]$.', '') + ' ' + phone_parts[1].replace(r'^[-.*()+ ].$', '')
 
+# Function used to validate user input according to a regex
+# A lambda function may be applied to the input in order to fit a specific format
 def inputWithValidation(regExPattern, promptText, inputTreatment = lambda x: x):
 	ok = False # variable to validate modifications
 	while not ok: # while the input is not following the pattern wanted, the user must enter another input
@@ -112,6 +124,7 @@ def inputWithValidation(regExPattern, promptText, inputTreatment = lambda x: x):
 			ok = True
 	return resp # returning input from user
 
+# Function used by a user to register a new account
 def register():
 	userType = promptUserType(
 		'Deseja registrar como fotógrafo ou como contratante?\n>> ')
@@ -124,7 +137,7 @@ def register():
 		return False
 	return True
 
-
+# Function used to register Contractor (used by register())
 def registerContractorFields():
 	query_params = dict()
 	while True: # keep accepting input while there's an invalid entry from the user
@@ -162,6 +175,7 @@ def registerContractorFields():
 			print("[ERRO] Erro ao cadastrar contratante...")
 			# print(e, file=sys.stderr) -> avoid giving too much info
 
+# Function used to register photographer (used by register())
 def registerPhotographerFields():
 	query_params = dict()
 	languages = []
@@ -206,7 +220,8 @@ def registerPhotographerFields():
 		except Exception as e:
 			print("[ERRO] Erro ao cadastrar fotógrafo...")
 			# print(e, file=sys.stderr) # -> avoid giving too much info
-	
+
+# Function used to show all offers (used in main after photographer has logged in) 
 def showOffers():
 	offersList = ''
 
@@ -225,6 +240,7 @@ def showOffers():
 
 	print(offersList)
 
+# Function used to show all photographers (used in main after contractor has logged in) 
 def showPhotographers():
 	photList = ''
 
@@ -263,15 +279,18 @@ def dbg_listfot():
 def main():
 	load_dotenv()  # loading .env file
 
-	# Server-side
+	# "Server-side"
 	dbConnect()  # Connect
+
+	# After connection has been made, cur is the cursor and conn is the connection
+	# If the connection has failed, they will both be None.
 	assert cur != None, "Database cursor is None!"
 	assert conn != None, "Database connection is None!"
 
 	dbg_listcont()
 	dbg_listfot()
 	
-	# Client-side
+	# "Client-side"
 	option = ''
 	print('\
 	****************************************************************************\n \

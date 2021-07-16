@@ -102,7 +102,7 @@ CREATE TABLE Fotografo (
 	telefone VARCHAR(25) NOT NULL,
 	rating SMALLINT,
 	qtd_aval INT DEFAULT 0,
-	nacionalidade VARCHAR(30) NOT NULL, -- Para depois: todos os países podem ser representados por um código de tres caracteres (ISO 3166-1 alfa-3)
+	nacionalidade VARCHAR(30) NOT NULL, --Todos os países podem ser representados por um código de tres caracteres (ISO 3166-1 alfa-3)
 	data_nasc DATE NOT NULL, -- Somente a data (sem horário)
 	visualizacoes INT DEFAULT 0,
 	nb_servicos INT DEFAULT 0,
@@ -113,19 +113,18 @@ CREATE TABLE Fotografo (
 	CHECK (qtd_aval >= 0),
 	CHECK (rating >= 0 and rating <= 5),
 	CHECK (visualizacoes >= 0),
-	CHECK (nb_servicos >= 0)
+	CHECK (nb_servicos >= 0),
+	CHECK (LENGTH(nacionalidade) = 3)
 
-	-- todo?: CHECK nacionalidade in NACS
 );
 
 CREATE TABLE IdiomaFotografo (
 	doc_fot VARCHAR(20) NOT NULL,
-	idioma CHAR(3) NOT NULL, -- Segundo ISO_639-2
+	idioma CHAR(3) NOT NULL, -- Segundo ISO_639-2, 3 dígitos
 	CONSTRAINT pk_idioma PRIMARY KEY (doc_fot, idioma),
-	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot) ON DELETE CASCADE
-
-	--TODO?: CHECK idioma in IDIOMAS_POSSIVEIS
+	CONSTRAINT fk_fotografo FOREIGN KEY (doc_fot) REFERENCES Fotografo(doc_fot) ON DELETE CASCADE,
 	
+	CHECK (LENGTH(idioma) = 3)
 );
 
 CREATE TABLE PortfolioFotografo (

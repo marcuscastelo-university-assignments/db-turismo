@@ -1,36 +1,5 @@
 	-- Arquivo com 7 consultas complexas que podem ser feitas no banco
 
-	/*
-	Inner join ==============================================>  [ usado em 4 ]
-	Left/Right join =========================================>  [ usado em 1 ]
-	Cross join
-	Except ==================================================>	[ usado em 1 ]
-	Where ===================================================>  [ usado em 6 ]
-	Group by [having] =======================================>	[ usado em 2 ]
-	Order by  ===============================================>	[ usado em 1 ]
-	Distinct  ===============================================>	[ usado em 1 ]
-	Agregação (max, avg, count, etc...) =====================>	[ usado em 2 ]
-	EXISTS ==================================================>	[ usado em 2 ]
-	IN
-	when ... case ... else ...
-	NESTED SELECTS ===========================================>  [ usado em 3 ]
-	LIKE ====================================================>	[ usado em 1 ]
-	UNION  ==================================================>  [ usado em 2 ]
-
-	Assignment
-
-	Álgebra Relacinal:
-	Intersection
-	Exclusive Union
-
-	OBRIGATORIO TER UMA COM DIVISION: https://www.geeksforgeeks.org/sql-division/
-
-
-	OBS: 
-	Inner join com Left/Right join (a ordem importa)
-	*/
-
-
 	-- Seleciona todos os idiomas falados pelos fotógrafos que tem 
 	-- o telefone começando com +55 (código do Brasil)
 	SELECT DISTINCT I.idioma AS pais FROM Fotografo F, IdiomaFotografo I 
@@ -65,7 +34,7 @@
 	SELECT F.nome AS nome_usuario, 'fotógrafo' AS tipo, COALESCE(F.rating, -1) AS rating
 	FROM Fotografo F
 	ORDER BY rating;
-	-- COALESCE é usado para trocar os ratings nulos por 0
+	-- COALESCE é usado para trocar os ratings nulos por -1
 
 	-- Selecionar todas as hospedagem oferecidas por cada contratante as quais não tem qualquer reserva feita até o momento no ano atual
 	SELECT OH.doc_cont AS contratante, H.Nome AS nome_hospedagem, H.tipo AS tipo_hospedagem
@@ -88,7 +57,7 @@
 		SELECT O.doc_cont as doc, O.local as local, COUNT(*) AS qty FROM Oferta O
 		GROUP BY O.doc_cont, O.local
 	) AS L
-	LEFT JOIN
+	INNER JOIN
 	(
 		SELECT C.doc as doc, MAX(C.qty) as max_qty FROM (
 			SELECT O.doc_cont as doc, O.local as local, COUNT(*) AS qty FROM Oferta O
@@ -97,7 +66,6 @@
 		GROUP BY C.doc
 	) AS R
 	ON L.doc = R.doc and L.qty = R.max_qty
-	WHERE R.max_qty IS NOT NULL
 	GROUP BY L.doc, R.max_qty;
 
 	-- Liste todos os contratantes que tem serviços com todos os fotógrafos (divisão)
