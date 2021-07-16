@@ -25,7 +25,7 @@ VALUES
 	'12345000', -- cep
 	'Santos', -- cidade
 	'São Paulo', -- estado
-	'Brasil', -- pais
+	'BRA', -- pais
 	DEFAULT -- numero de servicos
 ),
 (
@@ -41,7 +41,7 @@ VALUES
 	'11223123', -- cep
 	'São Carlos', -- cidade
 	'São Paulo', -- estado
-	'Brasil', -- pais
+	'BRA', -- pais
 	DEFAULT -- numero de servicos
 );
 
@@ -141,7 +141,7 @@ VALUES
 	NULL, -- complemento
 	'Cabreúva', -- cidade
 	'São Paulo', -- estado
-  	'Brasil', -- brasil
+  	'BRA', -- Brasil
   	'sítio' -- tipo de hospedagem
 ),
 (
@@ -152,7 +152,7 @@ VALUES
 	NULL, -- complemento
 	'Guarujá', -- cidade
 	'São Paulo', -- estado
-  	'Brasil', -- brasil
+  	'BRA', -- Brasil
   	'hotel' -- tipo de hospedagem
 );
 
@@ -181,10 +181,10 @@ VALUES
 	'12312312300', -- documento do fotógrafo
 	'Pedro Rogério Silva', -- nome
 	'pedro_rog@gmail.com', -- email
-	'21997564011', -- telefone
+	'+55 21997564011', -- telefone
 	NULL, -- rating
 	DEFAULT, -- qtd. de avaliações
-	'brasileiro', -- nacionalidade
+	'BRA', -- nacionalidade
 	'1985-03-10', -- data de nascimento no formato YYYY-MM-DD
 	DEFAULT, -- qtd. visualizações no perfil
 	DEFAULT -- qtd. de serviços feitos 
@@ -193,10 +193,10 @@ VALUES
 	'49320549212', -- documento do fotógrafo
 	'Lucca Romeu Matias Fausto', -- nome
 	'luc_romeu11@outlook.com', -- email
-	'16998091322', -- telefone
+	'+55 16998091322', -- telefone
 	NULL, -- rating
 	DEFAULT, -- qtd. de avaliações
-	'brasileiro', -- nacionalidade
+	'BRA', -- nacionalidade
 	'1991-07-23', -- data de nascimento no formato YYYY-MM-DD
 	DEFAULT, -- qtd. visualizações no perfil
 	DEFAULT -- qtd. de serviços feitos 
@@ -205,12 +205,12 @@ VALUES
 -- ---------------- INSERINDO EM IDIOMA FOTOGRAFO ---------------- --
 INSERT INTO IdiomaFotografo (doc_fot, idioma) 
 VALUES 
-	('12312312300', 'por'),
-	('12312312300', 'jpn'),
-	('12312312300', 'eng'),
+	('12312312300', 'POR'),
+	('12312312300', 'PJN'),
+	('12312312300', 'ENG'),
 	---
-	('49320549212', 'por'),
-	('49320549212', 'spa');
+	('49320549212', 'POR'),
+	('49320549212', 'SPA');
 
 -- ---------------- INSERINDO EM PORTFOLIO FOTOGRAFO ---------------- --
 INSERT INTO PortfolioFotografo (doc_fot, checksum, imagem_url)
