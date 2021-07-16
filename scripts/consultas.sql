@@ -62,26 +62,26 @@ WHERE
      );
 
 
-
+-- Seleciona o local mais mencionado nas ofertas de cada contratante, bem como a quantidade de vezes que ele aparece
+SELECT L.doc, MIN(L.local), R.max_qty AS max_qty FROM 
+(
+	SELECT O.doc_cont as doc, O.local as local, COUNT(*) AS qty FROM Oferta O
+	GROUP BY O.doc_cont, O.local
+) AS L
+LEFT JOIN
+(
+	SELECT C.doc as doc, MAX(C.qty) as max_qty FROM (
+		SELECT O.doc_cont as doc, O.local as local, COUNT(*) AS qty FROM Oferta O
+		GROUP BY O.doc_cont, O.local
+	) as C
+	GROUP BY C.doc
+) AS R
+ON L.doc = R.doc and L.qty = R.max_qty
+WHERE R.max_qty IS NOT NULL
+GROUP BY L.doc, R.max_qty;
 
 
 ------------------------ EM DESENVOLVIMENTO: ------------------------
-
--- Seleciona o local mais mencionado nas ofertas de cada contratante, bem como a quantidade de vezes que ele aparece
-SELECT doc, local, qty FROM (
-	SELECT O.doc_cont as doc, O.local as local, COUNT(*) AS qty FROM Oferta O
-	GROUP BY O.doc_cont, O.local
-) 
-	
-ON a.adoc = b.bdoc and a.alocal = b.blocal and a.aqty < b.bqty
-WHERE b.bdoc IS NULL;
-
-SELECT C.doc_cont as contratante, MAX(ML.qty) as ofertas_no_local FROM Contratante C INNER JOIN (
-	SELECT O.doc_cont, O.local, COUNT(*) AS qty FROM Oferta O
-	GROUP BY O.doc_cont, O.local
-) ML ON C.doc_cont = ML.doc_cont
-GROUP BY C.doc_cont;
-
 -- Média de tempo de reserva hospedagem agrupada por local de oferta de serviço
 -- TODO: subtração de datas no postgree
 -- TODO: dar nome para coluna AVG (como faz?)

@@ -45,6 +45,7 @@ VALUES
 	DEFAULT -- numero de servicos
 );
 
+
 -- ---------------- INSERINDO EM OFERTA ---------------- --
 INSERT INTO Oferta (doc_cont,titulo,formas_pag,local,descricao,tipo_servico)
 VALUES 
@@ -99,6 +100,14 @@ VALUES
 (
 	'22222222222', -- documento do contratante
 	'Novo 2', -- titulo
+	'moradia, outros', -- formas de pagamento
+	'Novo local', -- local
+	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
+	'evento cultural' -- tipo de servico
+),
+(
+	'22222222222', -- documento do contratante
+	'Novo 3', -- titulo
 	'moradia, outros', -- formas de pagamento
 	'Novo local', -- local
 	'Precisa-se de fotógrafo para fotografar evento de fim de ano que ocorrerá no mosteiro. O evento terá duração de 2 dias (fim de semana).', -- descricao
