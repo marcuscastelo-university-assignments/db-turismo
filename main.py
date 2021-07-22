@@ -83,7 +83,7 @@ def authAs(type):
 def promptUserType(promptMessage):
 	# returns c for contractor and f for photographer
 	userType = '-'
-	while userType.lower()[0] not in ['c', 'f']:
+	while len(userType) < 1 or userType.lower()[0] not in ['c', 'f']:
 		userType = input(promptMessage)
 	return userType.lower()[0]
 
@@ -145,7 +145,7 @@ def registerContractorFields():
 		query_params['doc_cont'] = inputWithValidation(r'^(\d{11}|\d{14})$', 'Digite o seu documento (CPF ou CNPJ):', lambda x: x.replace('.', ''))
 		
 		query_params['nome'] = input('Digite o nome:')
-		query_params['email'] = inputWithValidation(r'^[a-z0-9.\-\_]+@[a-z0-9\-\_]+\.[a-z]+(\.[a-z]+)?$/', 'Digite o email: ')
+		query_params['email'] = inputWithValidation(r'^[a-z0-9.\-\_]+@[a-z0-9\-\_]+\.[a-z]+(\.[a-z]+)?$', 'Digite o email: ')
 		
 		while True:
 			sanitized_phone = sanitizePhone(input('Digite o telefone (+<código do país> <número de telefone>):')) 
@@ -194,7 +194,7 @@ def registerPhotographerFields():
 
 		query_params['telefone'] = sanitized_phone
 
-		query_params['nacionalidade'] = input('Digite o nacionalidade: ')
+		query_params['nacionalidade'] = inputWithValidation(r'^[A-Za-z]{3}$', 'Digite o nacionalidade: ')
 		query_params['data_nasc'] = inputWithValidation(r'^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d$', 'Digite a data de nascimento (dd/mm/aaaa): ')
 		
 		# Uses ISO 639-2 for language codes
@@ -207,6 +207,8 @@ def registerPhotographerFields():
 				INSERT INTO Fotografo (doc_fot,nome,email,telefone,nacionalidade,data_nasc) 
 				VALUES (%(doc_fot)s,%(nome)s,%(email)s,%(telefone)s,%(nacionalidade)s,TO_DATE(%(data_nasc)s, 'DD/MM/YYYY'))
 			''', query_params)
+
+			languages = list(set(languages)) # Remove repeated languages
 
 			for lang in languages:
 				cur.execute('''
@@ -231,11 +233,11 @@ def showOffers():
 
 	# creating string with all offers (offers list)
 	for index, row in enumerate(queryResult):
-		offersList += '\n== Oferta {} ==\n'.fornat(str(index+1))
+		offersList += '\n== Oferta {} ==\n'.format(str(index+1))
 		offersList += 'Título: {}\n'.format(row[0])
 		offersList += 'Local: {} \n'.format(row[1])
 		offersList += 'Descrição: {}\n'.format(row[2])
-		offersList += 'Tipo de serviço: {}\n'.format(ow[3])
+		offersList += 'Tipo de serviço: {}\n'.format(row[3])
 		offersList += 'Formas de pagamento: {}\n'.format(row[4])
 
 	print(offersList)
@@ -287,8 +289,8 @@ def main():
 	assert cur != None, "Database cursor is None!"
 	assert conn != None, "Database connection is None!"
 
-	dbg_listcont()
-	dbg_listfot()
+	# dbg_listcont()
+	# dbg_listfot()
 	
 	# "Client-side"
 	option = ''
@@ -301,7 +303,9 @@ def main():
 
 	while option not in ['r', 'l']:
 		option = input(
-			'[!] Escolha uma opção (r/l):\n\t[r] Registrar nova conta\n\t[l] Logar em conta existente\n\n>> ').lower()[0]
+			'[!] Escolha uma opção (r/l):\n\t[r] Registrar nova conta\n\t[l] Logar em conta existente\n\n>> '
+			) + ' '
+		option = option.lower()[0]
 	if option == 'r':
 		register()
 	elif option == 'l':
